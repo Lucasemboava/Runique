@@ -107,7 +107,7 @@ private fun RuniqueLogoVertical(
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = stringResource(id = R.string.runique_name),
+            text = stringResource(id = R.string.runique),
             fontSize = 24.sp,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onBackground
