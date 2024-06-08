@@ -2,6 +2,7 @@
 
 package com.emboava.auth.presentation.register
 
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -42,6 +45,7 @@ import com.emboava.core.presentation.designsystem.components.GradientBackground
 import com.emboava.core.presentation.designsystem.components.RuniqueActionButton
 import com.emboava.core.presentation.designsystem.components.RuniquePasswordTextField
 import com.emboava.core.presentation.designsystem.components.RuniqueTextField
+import com.emboava.core.presentation.ui.ObserveAsEvents
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -50,6 +54,30 @@ fun RegisterScreenRoot(
     onSuccessfulRegistration: () -> Unit,
     viewModel: RegisterViewModel = koinViewModel(),
 ) {
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    ObserveAsEvents(viewModel.events) { event ->
+        when(event) {
+            is RegisterEvent.Error -> {
+                keyboardController?.hide()
+                Toast.makeText(
+                    context,
+                    event.error.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            RegisterEvent.RegistrationSuccess -> {
+                keyboardController?.hide()
+                Toast.makeText(
+                    context,
+                    R.string.registration_successful,
+                    Toast.LENGTH_LONG
+                ).show()
+                onSuccessfulRegistration()
+            }
+        }
+    }
+
     RegisterScreen(
         state = viewModel.state,
         onAction = viewModel::onAction
@@ -120,7 +148,7 @@ private fun RegisterScreen(
                 title = stringResource(id = R.string.email),
                 modifier = Modifier.fillMaxWidth(),
                 additionalInfo = stringResource(id = R.string.must_be_a_valid_email),
-                keyboardType = KeyboardType.Email,
+                keyboardType = KeyboardType.Email
             )
             Spacer(modifier = Modifier.height(16.dp))
             RuniquePasswordTextField(
@@ -134,6 +162,7 @@ private fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
+
             PasswordRequirement(
                 text = stringResource(
                     id = R.string.at_least_x_characters,
@@ -193,7 +222,7 @@ fun PasswordRequirement(
                 CrossIcon
             },
             contentDescription = null,
-            tint = if (isValid) RuniqueGreen else RuniqueDarkRed
+            tint = if(isValid) RuniqueGreen else RuniqueDarkRed
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
