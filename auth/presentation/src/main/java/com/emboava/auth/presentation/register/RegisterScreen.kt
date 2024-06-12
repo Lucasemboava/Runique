@@ -38,7 +38,6 @@ import com.emboava.core.presentation.designsystem.CrossIcon
 import com.emboava.core.presentation.designsystem.EmailIcon
 import com.emboava.core.presentation.designsystem.Poppins
 import com.emboava.core.presentation.designsystem.RuniqueDarkRed
-import com.emboava.core.presentation.designsystem.RuniqueGray
 import com.emboava.core.presentation.designsystem.RuniqueGreen
 import com.emboava.core.presentation.designsystem.RuniqueTheme
 import com.emboava.core.presentation.designsystem.components.GradientBackground
@@ -106,7 +105,7 @@ private fun RegisterScreen(
                 withStyle(
                     style = SpanStyle(
                         fontFamily = Poppins,
-                        color = RuniqueGray
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 ) {
                     append(stringResource(id = R.string.already_have_an_account) + " ")
