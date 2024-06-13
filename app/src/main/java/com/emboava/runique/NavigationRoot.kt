@@ -1,6 +1,5 @@
 package com.emboava.runique
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -8,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.emboava.auth.presentation.intro.IntroScreenRoot
+import com.emboava.auth.presentation.login.LoginScreenRoot
 import com.emboava.auth.presentation.register.RegisterScreenRoot
 
 @Composable
@@ -17,7 +17,6 @@ fun NavigationRoot(
     NavHost(
         navController = navController,
         startDestination = "auth"
-
     ) {
         authGraph(navController)
     }
@@ -54,8 +53,25 @@ private fun NavGraphBuilder.authGraph(navController: NavHostController) {
                 }
             )
         }
-        composable("login") {
-            Text(text = "Login")
+        composable(route = "login") {
+            LoginScreenRoot(
+                onLoginSuccess = {
+                    navController.navigate("run") {
+                        popUpTo("auth") {
+                            inclusive = true
+                        }
+                    }
+                },
+                onSignUpClick = {
+                    navController.navigate("register") {
+                        popUpTo("login") {
+                            inclusive = true
+                            saveState = true
+                        }
+                        restoreState = true
+                    }
+                }
+            )
         }
     }
 }
