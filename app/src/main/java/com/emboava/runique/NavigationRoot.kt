@@ -13,7 +13,7 @@ import com.emboava.auth.presentation.login.LoginScreenRoot
 import com.emboava.auth.presentation.register.RegisterScreenRoot
 import com.emboava.run.presentation.active_run.ActiveRunScreenRoot
 import com.emboava.run.presentation.active_run.service.ActiveRunService
-import com.emboava.run.run_overview.RunOverviewScreenRoot
+import com.emboava.run.presentation.run_overview.RunOverviewScreenRoot
 
 @Composable
 fun NavigationRoot(
