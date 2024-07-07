@@ -1,4 +1,4 @@
-package com.emboava.run.run_overview
+package com.emboava.run.presentation.run_overview
 
 import androidx.lifecycle.ViewModel
 
