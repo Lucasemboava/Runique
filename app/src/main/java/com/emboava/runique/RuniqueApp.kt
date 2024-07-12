@@ -4,6 +4,7 @@ import android.app.Application
 import com.emboava.auth.data.di.authDataModule
 import com.emboava.auth.presentation.di.authViewModelModule
 import com.emboava.core.data.di.coreDataModule
+import com.emboava.core.database.di.databaseModule
 import com.emboava.run.location.di.locationModule
 import com.emboava.run.presentation.di.runPresentationModule
 import com.emboava.runique.di.appModule
@@ -33,7 +34,8 @@ class RuniqueApp : Application() {
                 appModule,
                 coreDataModule,
                 runPresentationModule,
-                locationModule
+                locationModule,
+                databaseModule
             )
         }
 
