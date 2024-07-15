@@ -127,6 +127,13 @@ class RunningTracker(
         isObservingLocation.value = true
     }
 
+    fun finishRun() {
+        stopObservingLocation()
+        setIsTracking(false)
+        _elapsedTime.value = Duration.ZERO
+        _runData.value = RunData()
+    }
+
     fun stopObservingLocation() {
         isObservingLocation.value = false
     }
