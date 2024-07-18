@@ -6,6 +6,7 @@ import com.emboava.auth.presentation.di.authViewModelModule
 import com.emboava.core.data.di.coreDataModule
 import com.emboava.core.database.di.databaseModule
 import com.emboava.run.location.di.locationModule
+import com.emboava.run.network.di.networkModule
 import com.emboava.run.presentation.di.runPresentationModule
 import com.emboava.runique.di.appModule
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +36,8 @@ class RuniqueApp : Application() {
                 coreDataModule,
                 runPresentationModule,
                 locationModule,
-                databaseModule
+                databaseModule,
+                networkModule
             )
         }
 
