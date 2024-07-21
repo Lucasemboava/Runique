@@ -8,6 +8,7 @@ import com.emboava.core.domain.run.RemoteRunDataSource
 import com.emboava.core.domain.run.Run
 import com.emboava.core.domain.run.RunId
 import com.emboava.core.domain.run.RunRepository
+import com.emboava.core.domain.run.SyncRunScheduler
 import com.emboava.core.domain.util.DataError
 import com.emboava.core.domain.util.EmptyResult
 import com.emboava.core.domain.util.Result
@@ -24,7 +25,8 @@ class OfflineFirstRunRepository(
     private val remoteRunDataSource: RemoteRunDataSource,
     private val applicationScope: CoroutineScope,
     private val runPendingSyncDao: RunPendingSyncDao,
-    private val sessionStorage: SessionStorage
+    private val sessionStorage: SessionStorage,
+    private val syncRunScheduler: SyncRunScheduler
 ) : RunRepository {
 
     override fun getRuns(): Flow<List<Run>> {
@@ -56,6 +58,14 @@ class OfflineFirstRunRepository(
 
         return when (remoteResult) {
             is Result.Error -> {
+                applicationScope.launch {
+                    syncRunScheduler.scheduleSync(
+                        type = SyncRunScheduler.SyncType.CreateRun(
+                            run = runWithId,
+                            mapPictureBytes = mapPicture
+                        )
+                    )
+                }.join()
                 Result.Success(Unit)
             }
 
@@ -74,7 +84,7 @@ class OfflineFirstRunRepository(
         // and then deleted in offline-mode as well. In that case,
         // we don't need to sync anything.
         val isPendingSync = runPendingSyncDao.getRunPendingSyncEntity(id) != null
-        if(isPendingSync) {
+        if (isPendingSync) {
             runPendingSyncDao.deleteRunPendingSyncEntity(id)
             return
         }
@@ -82,6 +92,14 @@ class OfflineFirstRunRepository(
         val remoteResult = applicationScope.async {
             remoteRunDataSource.deleteRun(id)
         }.await()
+
+        if(remoteResult is Result.Error) {
+            applicationScope.launch {
+                syncRunScheduler.scheduleSync(
+                    type = SyncRunScheduler.SyncType.DeleteRun(id)
+                )
+            }.join()
+        }
     }
 
     override suspend fun syncPendingRuns() {
@@ -100,7 +118,7 @@ class OfflineFirstRunRepository(
                 .map {
                     launch {
                         val run = it.run.toRun()
-                        when(remoteRunDataSource.postRun(run, it.mapPictureBytes)) {
+                        when (remoteRunDataSource.postRun(run, it.mapPictureBytes)) {
                             is Result.Error -> Unit
                             is Result.Success -> {
                                 applicationScope.launch {
@@ -114,7 +132,7 @@ class OfflineFirstRunRepository(
                 .await()
                 .map {
                     launch {
-                        when(remoteRunDataSource.deleteRun(it.runId)) {
+                        when (remoteRunDataSource.deleteRun(it.runId)) {
                             is Result.Error -> Unit
                             is Result.Success -> {
                                 applicationScope.launch {
