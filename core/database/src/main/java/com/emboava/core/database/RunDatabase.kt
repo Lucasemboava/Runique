@@ -2,6 +2,7 @@ package com.emboava.core.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.emboava.core.database.dao.AnalyticsDao
 import com.emboava.core.database.dao.RunDao
 import com.emboava.core.database.dao.RunPendingSyncDao
 import com.emboava.core.database.entity.DeletedRunSyncEntity
@@ -20,4 +21,5 @@ abstract class RunDatabase : RoomDatabase() {
 
     abstract val runDao: RunDao
     abstract val runPendingSyncDao: RunPendingSyncDao
+    abstract val analyticsDao: AnalyticsDao
 }
