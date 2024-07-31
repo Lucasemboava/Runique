@@ -1,4 +1,4 @@
-package com.emboava.analytics.analytics_feature
+package com.emboava.wear.run.data
 
 import org.junit.Test
 
