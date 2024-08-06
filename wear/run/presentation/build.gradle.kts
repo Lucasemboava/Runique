@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.plcoding.wear.run.presentation"
+    namespace = "com.emboava.wear.run.presentation"
 
     defaultConfig {
         minSdk = 30
@@ -25,4 +25,5 @@ dependencies {
     implementation(libs.bundles.koin.compose)
 
     implementation(projects.core.presentation.designsystemWear)
+    implementation(projects.core.presentation.ui)
 }
