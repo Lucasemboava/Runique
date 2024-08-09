@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.plcoding.wear.run.data"
+    namespace = "com.emboava.wear.run.data"
     defaultConfig {
         minSdk = 30
     }
@@ -12,4 +12,7 @@ android {
 dependencies {
     implementation(libs.androidx.health.services.client)
     implementation(libs.bundles.koin)
+
+    implementation(projects.wear.run.domain)
+    implementation(projects.core.domain)
 }
