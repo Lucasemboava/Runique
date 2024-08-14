@@ -1,4 +1,4 @@
-package com.emboava.core.data
+package com.emboava.core.connectivity.data
 
 import org.junit.Test
 
