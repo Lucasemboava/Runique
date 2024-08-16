@@ -1,13 +1,19 @@
 package com.emboava.wear.app.presentation
 
 import android.app.Application
+import com.emboava.core.connectivity.data.coreConnectivityDataModule
+import com.emboava.wear.app.presentation.di.appModule
 import com.emboava.wear.run.data.di.wearRunDataModule
 import com.emboava.wear.run.presentation.di.wearRunPresentationModule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
-class RuniqueApp: Application() {
+class RuniqueApp : Application() {
+
+    val applicationScope = CoroutineScope(SupervisorJob())
 
     override fun onCreate() {
         super.onCreate()
@@ -15,8 +21,10 @@ class RuniqueApp: Application() {
             androidLogger()
             androidContext(this@RuniqueApp)
             modules(
+                appModule,
                 wearRunPresentationModule,
-                wearRunDataModule
+                wearRunDataModule,
+                coreConnectivityDataModule
             )
         }
     }
