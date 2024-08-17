@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.emboava.auth.data.di.authDataModule
 import com.emboava.auth.presentation.di.authViewModelModule
+import com.emboava.core.connectivity.data.coreConnectivityDataModule
 import com.emboava.core.data.di.coreDataModule
 import com.emboava.core.database.di.databaseModule
 import com.emboava.run.data.di.runDataModule
@@ -43,10 +44,12 @@ class RuniqueApp : Application() {
                 locationModule,
                 databaseModule,
                 networkModule,
-                runDataModule
+                runDataModule,
+                coreConnectivityDataModule
             )
         }
     }
+
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         SplitCompat.install(this)
