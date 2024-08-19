@@ -1,7 +1,7 @@
 package com.emboava.wear.app.presentation
 
 import android.app.Application
-import com.emboava.core.connectivity.data.coreConnectivityDataModule
+import com.emboava.core.connectivity.data.di.coreConnectivityDataModule
 import com.emboava.wear.app.presentation.di.appModule
 import com.emboava.wear.run.data.di.wearRunDataModule
 import com.emboava.wear.run.presentation.di.wearRunPresentationModule
