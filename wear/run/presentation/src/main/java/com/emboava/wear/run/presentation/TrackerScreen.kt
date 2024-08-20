@@ -3,6 +3,7 @@ package com.emboava.wear.run.presentation
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -39,6 +40,7 @@ import com.emboava.core.presentation.designsystem.FinishIcon
 import com.emboava.core.presentation.designsystem.PauseIcon
 import com.emboava.core.presentation.designsystem.StartIcon
 import com.emboava.core.presentation.designsystem_wear.RuniqueTheme
+import com.emboava.core.presentation.ui.ObserveAsEvents
 import com.emboava.core.presentation.ui.formatted
 import com.emboava.core.presentation.ui.toFormattedHeartRate
 import com.emboava.core.presentation.ui.toFormattedKm
@@ -49,6 +51,19 @@ import org.koin.androidx.compose.koinViewModel
 fun TrackerScreenRoot(
     viewModel: TrackerViewModel = koinViewModel(),
 ) {
+    val context = LocalContext.current
+    ObserveAsEvents(viewModel.events) { event ->
+        when(event) {
+            is TrackerEvent.Error -> {
+                Toast.makeText(
+                    context,
+                    event.message.asString(context),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            TrackerEvent.RunFinished -> Unit
+        }
+    }
     TrackerScreen(
         state = viewModel.state,
         onAction = viewModel::onAction
