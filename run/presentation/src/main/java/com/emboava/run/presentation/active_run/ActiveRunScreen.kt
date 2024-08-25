@@ -20,11 +20,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.emboava.core.presentation.designsystem.RuniqueTheme
 import com.emboava.core.presentation.designsystem.StartIcon
 import com.emboava.core.presentation.designsystem.StopIcon
@@ -38,7 +40,7 @@ import com.emboava.core.presentation.ui.ObserveAsEvents
 import com.emboava.run.presentation.R
 import com.emboava.run.presentation.active_run.components.RunDataCard
 import com.emboava.run.presentation.active_run.maps.TrackerMap
-import com.emboava.run.presentation.active_run.service.ActiveRunService
+import com.emboava.core.notification.ActiveRunService
 import com.emboava.run.presentation.util.hasLocationPermission
 import com.emboava.run.presentation.util.hasNotificationPermission
 import com.emboava.run.presentation.util.shouldShowLocationPermissionRationale
@@ -53,7 +55,6 @@ fun ActiveRunScreenRoot(
     onServiceToggle: (isServiceRunning: Boolean) -> Unit,
     viewModel: ActiveRunViewModel = koinViewModel(),
 ) {
-
     val context = LocalContext.current
     ObserveAsEvents(flow = viewModel.events) { event ->
         when(event) {
@@ -67,7 +68,6 @@ fun ActiveRunScreenRoot(
             ActiveRunEvent.RunSaved -> onFinish()
         }
     }
-
     ActiveRunScreen(
         state = viewModel.state,
         onServiceToggle = onServiceToggle,
@@ -95,10 +95,8 @@ private fun ActiveRunScreen(
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { perms ->
-        val hasCourseLocationPermission =
-            perms[android.Manifest.permission.ACCESS_COARSE_LOCATION] == true
-        val hasFineLocationPermission =
-            perms[android.Manifest.permission.ACCESS_FINE_LOCATION] == true
+        val hasCourseLocationPermission = perms[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        val hasFineLocationPermission = perms[Manifest.permission.ACCESS_FINE_LOCATION] == true
         val hasNotificationPermission = if (Build.VERSION.SDK_INT >= 33) {
             perms[Manifest.permission.POST_NOTIFICATIONS] == true
         } else true
@@ -150,8 +148,9 @@ private fun ActiveRunScreen(
         }
     }
 
-    LaunchedEffect(key1 = state.shouldTrack) {
-        if (context.hasLocationPermission() && state.shouldTrack && !ActiveRunService.isServiceActive) {
+    val isServiceActive by ActiveRunService.isServiceActive.collectAsStateWithLifecycle()
+    LaunchedEffect(key1 = state.shouldTrack, isServiceActive) {
+        if (context.hasLocationPermission() && state.shouldTrack && !isServiceActive) {
             onServiceToggle(true)
         }
     }
@@ -274,7 +273,7 @@ private fun ActiveRunScreen(
                     onClick = {
                         onAction(ActiveRunAction.DismissRationaleDialog)
                         permissionLauncher.requestRuniquePermissions(context)
-                    }
+                    },
                 )
             }
         )

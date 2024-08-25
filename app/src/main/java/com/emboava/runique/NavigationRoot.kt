@@ -12,7 +12,6 @@ import com.emboava.auth.presentation.intro.IntroScreenRoot
 import com.emboava.auth.presentation.login.LoginScreenRoot
 import com.emboava.auth.presentation.register.RegisterScreenRoot
 import com.emboava.run.presentation.active_run.ActiveRunScreenRoot
-import com.emboava.run.presentation.active_run.service.ActiveRunService
 import com.emboava.run.presentation.run_overview.RunOverviewScreenRoot
 
 @Composable
@@ -126,14 +125,14 @@ private fun NavGraphBuilder.runGraph(
                 onServiceToggle = { shouldServiceRun ->
                     if (shouldServiceRun) {
                         context.startService(
-                            ActiveRunService.createStartIntent(
+                            com.emboava.core.notification.ActiveRunService.createStartIntent(
                                 context = context,
                                 activityClass = MainActivity::class.java
                             )
                         )
                     } else {
                         context.startService(
-                            ActiveRunService.createStopIntent(context = context)
+                            com.emboava.core.notification.ActiveRunService.createStopIntent(context = context)
                         )
                     }
                 }
