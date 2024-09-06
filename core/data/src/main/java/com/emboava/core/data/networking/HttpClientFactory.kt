@@ -5,7 +5,7 @@ import com.emboava.core.domain.AuthInfo
 import com.emboava.core.domain.SessionStorage
 import com.emboava.core.domain.util.Result
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -24,8 +24,8 @@ import timber.log.Timber
 class HttpClientFactory(
     private val sessionStorage: SessionStorage
 ) {
-    fun build(): HttpClient {
-        return HttpClient(CIO) {
+    fun build(engine: HttpClientEngine): HttpClient {
+        return HttpClient(engine) {
             // Content negotiation means everything related to parsing data and converting that to json
             install(ContentNegotiation) {
                 json(
